@@ -2,193 +2,35 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>استمارة ميثاق</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--tg-theme-bg-color, #f4f4f9); color: var(--tg-theme-text-color, #333); padding: 20px; }
-        .form-container { max-width: 500px; margin: 0 auto; background: var(--tg-theme-secondary-bg-color, #fff); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
-        label { font-weight: bold; display: block; margin-top: 15px; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
-        button { margin-top: 25px; width: 100%; padding: 12px; background-color: var(--tg-theme-button-color, #3498db); color: var(--tg-theme-button-text-color, #fff); border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background-color: #2980b9; }
-        .hidden { display: none; }
+        body { background-color: #ffffff; color: #000; font-family: sans-serif; padding: 20px; }
+        .debug { color: red; border: 1px solid red; padding: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
+    <div id="app">
+        <h1>جارٍ تحميل الاستمارة...</h1>
+        <div id="debug" class="debug" style="display:none;"></div>
+    </div>
 
-<div class="form-container">
-    <h2>استمارة ميثاق للزواج</h2>
-    <form id="marriageForm">
-        
-        <label>الاسم أو اللقب:</label>
-        <input type="text" id="name" required>
-
-        <label>الجنس:</label>
-        <select id="gender" required>
-            <option value="" disabled selected>اختر...</option>
-            <option value="ذكر">ذكر</option>
-            <option value="أنثى">أنثى</option>
-        </select>
-
-        <label>العمر:</label>
-        <input type="number" id="age" required>
-
-        <label>الحالة الاجتماعية:</label>
-        <select id="social_status" required>
-            <!-- تملأ ديناميكياً بواسطة الجافاسكريبت -->
-        </select>
-
-        <label>الأبناء (إن وجد):</label>
-        <select id="kids" required>
-            <option value="لا يوجد">لا يوجد</option>
-            <option value="نعم، معي">نعم، معي</option>
-            <option value="نعم، مع الطرف الآخر">نعم، مع الطرف الآخر</option>
-        </select>
-
-        <label>المستوى التعليمي:</label>
-        <select id="education" required>
-            <option value="ثانوي فما دون">ثانوي فما دون</option>
-            <option value="دبلوم">دبلوم</option>
-            <option value="بكالوريوس">بكالوريوس</option>
-            <option value="دراسات عليا">دراسات عليا</option>
-        </select>
-
-        <label>المهنة:</label>
-        <input type="text" id="job" required>
-
-        <label>الصلاة:</label>
-        <select id="prayer" required>
-            <option value="محافظ">محافظ</option>
-            <option value="أغلب الأوقات">أغلب الأوقات</option>
-        </select>
-
-        <label>التدخين:</label>
-        <select id="smoking" required>
-            <option value="لا">لا</option>
-            <option value="نعم">نعم</option>
-        </select>
-
-        <div id="hijab_div" class="hidden">
-            <label>الحجاب:</label>
-            <select id="hijab">
-                <option value="نقاب">نقاب</option>
-                <option value="خمار">خمار</option>
-                <option value="حجاب عادي">حجاب عادي</option>
-            </select>
-        </div>
-
-        <label>الطول (سم):</label>
-        <input type="number" id="height" required>
-
-        <label>الوزن (كج):</label>
-        <input type="number" id="weight" required>
-
-        <label>لون البشرة:</label>
-        <input type="text" id="skin_color" required>
-
-        <label>الحالة الصحية:</label>
-        <input type="text" id="health" placeholder="سليم ولله الحمد أو اذكر الحالة..." required>
-
-        <label>بلد الإقامة:</label>
-        <input type="text" id="country" required>
-
-        <label>المدينة / الولاية:</label>
-        <input type="text" id="state_name" required>
-
-        <label>مرونة الانتقال والسفر:</label>
-        <select id="travel_willingness" required>
-            <option value="نعم">نعم، مستعد</option>
-            <option value="لا">لا، غير مستعد</option>
-        </select>
-
-        <label>نمط الزواج المطلوب:</label>
-        <select id="marriage_type" required>
-            <option value="زواج شرعي أول">زواج شرعي أول</option>
-            <option value="تعدد">تعدد</option>
-            <option value="مسيار">مسيار</option>
-        </select>
-
-        <label>السكن:</label>
-        <select id="housing" required>
-            <option value="متوفر لدي">متوفر لدي</option>
-            <option value="أشترط توفره لدى الطرف الآخر">أشترط توفره لدى الطرف الآخر</option>
-        </select>
-
-        <label>أهم الشروط في الشريك:</label>
-        <textarea id="partner_specs" rows="2" required></textarea>
-
-        <label>بيانات التواصل (رقم / إيميل):</label>
-        <input type="text" id="contact_info" required>
-
-        <label>نبذة عنك:</label>
-        <textarea id="bio" rows="2" required></textarea>
-
-        <button type="button" onclick="submitForm()">إرسال الاستمارة</button>
-    </form>
-</div>
-
-<script>
-    let tg = window.Telegram.WebApp;
-    tg.expand(); // لفتح النافذة بكامل الشاشة
-
-    // منطق ذكي: تغيير الخيارات بناءً على الجنس
-    document.getElementById('gender').addEventListener('change', function() {
-        let gender = this.value;
-        let statusSelect = document.getElementById('social_status');
-        let hijabDiv = document.getElementById('hijab_div');
-        
-        statusSelect.innerHTML = '';
-        
-        if (gender === 'أنثى') {
-            hijabDiv.classList.remove('hidden');
-            let opts = ['بكر', 'مطلقة', 'أرملة'];
-            opts.forEach(opt => statusSelect.add(new Option(opt, opt)));
-        } else {
-            hijabDiv.classList.add('hidden');
-            let opts = ['أعزب', 'متزوج', 'مطلق', 'أرمل'];
-            opts.forEach(opt => statusSelect.add(new Option(opt, opt)));
-        }
-    });
-
-    function submitForm() {
-        // جمع البيانات
-        const data = {
-            name: document.getElementById('name').value,
-            gender: document.getElementById('gender').value,
-            age: document.getElementById('age').value,
-            social_status: document.getElementById('social_status').value,
-            kids: document.getElementById('kids').value,
-            education: document.getElementById('education').value,
-            job: document.getElementById('job').value,
-            prayer: document.getElementById('prayer').value,
-            smoking: document.getElementById('smoking').value,
-            hijab: document.getElementById('gender').value === 'أنثى' ? document.getElementById('hijab').value : 'لا ينطبق',
-            height: document.getElementById('height').value,
-            weight: document.getElementById('weight').value,
-            skin_color: document.getElementById('skin_color').value,
-            health: document.getElementById('health').value,
-            country: document.getElementById('country').value,
-            state_name: document.getElementById('state_name').value,
-            travel_willingness: document.getElementById('travel_willingness').value,
-            marriage_type: document.getElementById('marriage_type').value,
-            housing: document.getElementById('housing').value,
-            partner_specs: document.getElementById('partner_specs').value,
-            contact_info: document.getElementById('contact_info').value,
-            bio: document.getElementById('bio').value
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            document.getElementById('debug').style.display = 'block';
+            document.getElementById('debug').innerHTML = "خطأ: " + message;
         };
 
-        // التحقق من تعبئة الحقول الأساسية
-        if (!data.name || !data.gender || !data.age) {
-            tg.showAlert("⚠️ يرجى تعبئة كافة الحقول المطلوبة.");
-            return;
+        // محاولة تشغيل التطبيق بعد التأكد من تحميل مكتبة تليجرام
+        try {
+            let tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+            document.getElementById('app').innerHTML = "تم تحميل مكتبة تليجرام بنجاح! الاستمارة جاهزة للعمل.";
+        } catch (e) {
+            document.getElementById('debug').style.display = 'block';
+            document.getElementById('debug').innerHTML = "فشل تحميل مكتبة تليجرام: " + e.message;
         }
-
-        // إرسال كـ JSON وإغلاق النافذة
-        tg.sendData(JSON.stringify(data));
-        tg.close();
-    }
-</script>
+    </script>
 </body>
 </html>

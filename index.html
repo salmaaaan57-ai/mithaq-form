@@ -20,7 +20,7 @@
 
 <div class="form-container">
     <h2>استمارة ميثاق للزواج</h2>
-    <form id="marriageForm">
+    <form id="marriageForm" onsubmit="submitForm(event)">
         
         <label>الاسم أو اللقب:</label>
         <input type="text" id="name" required>
@@ -33,14 +33,16 @@
         </select>
 
         <label>العمر:</label>
-        <input type="number" id="age" required>
+        <input type="number" id="age" required min="18" max="90">
 
         <label>الحالة الاجتماعية:</label>
         <select id="social_status" required>
-            </select>
+            <option value="" disabled selected>اختر الجنس أولاً...</option>
+        </select>
 
         <label>الأبناء (إن وجد):</label>
         <select id="kids" required>
+            <option value="" disabled selected>اختر...</option>
             <option value="لا يوجد">لا يوجد</option>
             <option value="نعم، معي">نعم، معي</option>
             <option value="نعم، مع الطرف الآخر">نعم، مع الطرف الآخر</option>
@@ -48,6 +50,7 @@
 
         <label>المستوى التعليمي:</label>
         <select id="education" required>
+            <option value="" disabled selected>اختر...</option>
             <option value="ثانوي فما دون">ثانوي فما دون</option>
             <option value="دبلوم">دبلوم</option>
             <option value="بكالوريوس">بكالوريوس</option>
@@ -59,12 +62,14 @@
 
         <label>الصلاة:</label>
         <select id="prayer" required>
+            <option value="" disabled selected>اختر...</option>
             <option value="محافظ">محافظ</option>
             <option value="أغلب الأوقات">أغلب الأوقات</option>
         </select>
 
         <label>التدخين:</label>
         <select id="smoking" required>
+            <option value="" disabled selected>اختر...</option>
             <option value="لا">لا</option>
             <option value="نعم">نعم</option>
         </select>
@@ -79,16 +84,16 @@
         </div>
 
         <label>الطول (سم):</label>
-        <input type="number" id="height" required>
+        <input type="number" id="height" required min="100" max="220">
 
         <label>الوزن (كج):</label>
-        <input type="number" id="weight" required>
+        <input type="number" id="weight" required min="40" max="200">
 
         <label>لون البشرة:</label>
         <input type="text" id="skin_color" required>
 
         <label>الحالة الصحية:</label>
-        <input type="text" id="health" placeholder="سليم ولله الحمد أو اذكر الحالة..." required>
+        <input type="text" id="health" placeholder="سليم أو اذكر الحالة..." required>
 
         <label>بلد الإقامة:</label>
         <input type="text" id="country" required>
@@ -98,12 +103,14 @@
 
         <label>مرونة الانتقال والسفر:</label>
         <select id="travel_willingness" required>
+            <option value="" disabled selected>اختر...</option>
             <option value="نعم">نعم، مستعد</option>
             <option value="لا">لا، غير مستعد</option>
         </select>
 
         <label>نمط الزواج المطلوب:</label>
         <select id="marriage_type" required>
+            <option value="" disabled selected>اختر...</option>
             <option value="زواج شرعي أول">زواج شرعي أول</option>
             <option value="تعدد">تعدد</option>
             <option value="مسيار">مسيار</option>
@@ -111,6 +118,7 @@
 
         <label>السكن:</label>
         <select id="housing" required>
+            <option value="" disabled selected>اختر...</option>
             <option value="متوفر لدي">متوفر لدي</option>
             <option value="أشترط توفره لدى الطرف الآخر">أشترط توفره لدى الطرف الآخر</option>
         </select>
@@ -124,7 +132,7 @@
         <label>نبذة عنك:</label>
         <textarea id="bio" rows="2" required></textarea>
 
-        <button type="button" onclick="submitForm()">إرسال الاستمارة</button>
+        <button type="submit">إرسال الاستمارة</button>
     </form>
 </div>
 
@@ -132,7 +140,6 @@
     let tg = window.Telegram.WebApp;
     tg.expand(); 
 
-    // منطق ذكي: تغيير الخيارات بناءً على الجنس
     document.getElementById('gender').addEventListener('change', function() {
         let gender = this.value;
         let statusSelect = document.getElementById('social_status');
@@ -151,8 +158,10 @@
         }
     });
 
-    function submitForm() {
-        // جمع البيانات
+    function submitForm(event) {
+        // منع السلوك الافتراضي الذي يعيد تحميل الصفحة
+        event.preventDefault(); 
+
         const data = {
             name: document.getElementById('name').value,
             gender: document.getElementById('gender').value,
@@ -178,16 +187,13 @@
             bio: document.getElementById('bio').value
         };
 
-        // التحقق من تعبئة الحقول الأساسية
-        if (!data.name || !data.gender || !data.age) {
-            tg.showAlert("⚠️ يرجى تعبئة كافة الحقول المطلوبة.");
-            return;
-        }
-
-        // إرسال كـ JSON وإغلاق النافذة
-        tg.sendData(JSON.stringify(data));
-        tg.close();
+        // عرض رسالة التأكيد للمستخدم، وبعد إغلاقها يتم إرسال البيانات للتليجرام
+        tg.showAlert("✅ تم استلام بياناتك بنجاح! سيتم تحويلك للبوت الآن.", function() {
+            tg.sendData(JSON.stringify(data));
+            tg.close();
+        });
     }
 </script>
 </body>
 </html>
+
